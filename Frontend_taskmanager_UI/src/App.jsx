@@ -10,9 +10,23 @@ import useLocalStorage from "use-local-storage";
 import "../bootstrap.css";
 function App() {
   const [data, setData] = useState(
-    localStorage.getItem("kanban-board")
-      ? JSON.parse(localStorage.getItem("kanban-board"))
-      : []
+    [
+          {
+            id: uuidv4(),
+            boardName: "Backlog",
+            card: [],
+          },
+          {
+            id: uuidv4(),
+            boardName: "In Progress",
+            card: [],
+          },
+          {
+            id: uuidv4(),
+            boardName: "Completed",
+            card: [],
+          },
+      ]
   );
 
   const defaultDark = window.matchMedia(
@@ -127,7 +141,7 @@ function App() {
   };
 
   useEffect(() => {
-    localStorage.setItem("kanban-board", JSON.stringify(data));
+    localStorage.setItem("board", JSON.stringify(data));
   }, [data]);
 
   return (
@@ -145,17 +159,17 @@ function App() {
                 setName={setName}
                 addCard={addCard}
                 removeCard={removeCard}
-                removeBoard={removeBoard}
+                // removeBoard={removeBoard}
                 updateCard={updateCard}
               />
             ))}
-            <Editable
+            {/* <Editable
               class={"add__board"}
               name={"Add Board"}
               btnName={"Add Board"}
               onSubmit={addBoard}
               placeholder={"Enter Board Title"}
-            />
+            /> */}
           </div>
         </div>
       </div>

@@ -1,8 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const task_management_routes = require('./routes');
 
 const app = express();
 const port = 3300; // ##### PORT CHANGED FROM 3000 to 3300
+
+// Use cors middleware
+app.use(cors());
 
 // Will allow us to get json from our endpoints 
 app.use(express.json())

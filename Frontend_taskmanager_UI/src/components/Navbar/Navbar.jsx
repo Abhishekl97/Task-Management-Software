@@ -3,7 +3,7 @@ import "./Navbar.css";
 export default function Navbar(props) {
   return (
     <div className="navbar">
-      <h2>Kanban Board</h2>
+      <h2>Task Management Project</h2>
       <div>
         <input
           type="checkbox"

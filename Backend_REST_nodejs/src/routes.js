@@ -4,9 +4,12 @@ const controller = require('./controller');
 const router = Router();
 
 router.get('/users', controller.getUsers);
-router.get("/users/:id", controller.getUsersByID);
+// router.get("/users/:id", controller.getUsersByID);
+router.get("/users/email", controller.getUsersByEmailID);
 router.post("/users", controller.addUser);
-router.put("/users/:id", controller.updateUser);
+router.post("/users/email", controller.userLogin);
+// router.put("/users/:id", controller.updateUser);
+router.put("/users", controller.updateUserbyEmailID);
 router.delete("/users/:id", controller.removeUser);
 
 router.get('/projects', controller.getProjects);

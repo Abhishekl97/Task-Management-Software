@@ -20,6 +20,8 @@ export default function Board(props) {
     };
   });
 
+  const BacklogCheck = props.name === "Backlog";
+
   return (
     <div className="board">
       <div className="board__top">
@@ -47,23 +49,6 @@ export default function Board(props) {
             </p>
           </div>
         )}
-        <div
-          onClick={() => {
-            setDropdown(true);
-          }}
-        >
-          <MoreHorizontal />
-          {dropdown && (
-            <Dropdown
-              class="board__dropdown"
-              onClose={() => {
-                setDropdown(false);
-              }}
-            >
-              <p onClick={() => props.removeBoard(props.id)}>Delete Board</p>
-            </Dropdown>
-          )}
-        </div>
       </div>
       <Droppable droppableId={props.id.toString()}>
         {(provided) => (
@@ -90,12 +75,14 @@ export default function Board(props) {
         )}
       </Droppable>
       <div className="board__footer">
-        <Editable
-          name={"Add Card"}
-          btnName={"Add Card"}
-          placeholder={"Enter Card Title"}
-          onSubmit={(value) => props.addCard(value, props.id)}
-        />
+        { BacklogCheck && ( 
+          <Editable
+            name={"Add Task"}
+            btnName={"Add Task"}
+            placeholder={"Enter Task Name"}
+            onSubmit={(value) => props.addCard(value, props.id)}
+          />
+        )}
       </div>
     </div>
   );

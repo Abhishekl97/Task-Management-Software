@@ -1,7 +1,9 @@
 const getUsers = "SELECT * FROM users";
-const getUsersByID = "SELECT * FROM users WHERE user_id = $1";
+// const getUsersByID = "SELECT * FROM users WHERE user_id = $1";
+const getUsersByEmailID = "SELECT * FROM users WHERE email_id = $1";
 const addUser = "INSERT INTO users (email_id, password) VALUES ($1, $2)";
-const updateUser = "UPDATE users SET password = $1 WHERE user_id = $2";
+// const updateUser = "UPDATE users SET password = $1 WHERE user_id = $2";
+const updateUserbyEmailID = "UPDATE users SET password = $1 WHERE email_id = $2";
 const removeUser = "DELETE FROM users WHERE user_id = $1";
 const checkEmailExists = "SELECT * FROM users WHERE email_id = $1";
 const getProjects = "SELECT * FROM projects";
@@ -23,9 +25,11 @@ const checkTaskExists = "SELECT * FROM tasks WHERE task_name = $1 AND project_id
 
 module.exports = {
     getUsers,
-    getUsersByID,
+    // getUsersByID,
+    getUsersByEmailID,
     addUser,
-    updateUser,
+    // updateUser,
+    updateUserbyEmailID,
     removeUser,
     checkEmailExists,
     getProjects,
