@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "../../Frontend_taskmanager_UI/src/components/Navbar/Navbar";
 import Board from "../../Frontend_taskmanager_UI/src/components/Board/Board";
-// import data from '../data'
 import { DragDropContext } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
-import Editable from "../src/components/Editable/Editable";
+// import Editable from "../src/components/Editable/Editable";
 import useLocalStorage from "use-local-storage";
 import "../bootstrap.css";
 function App() {
@@ -41,12 +40,13 @@ function App() {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  const setName = (title, bid) => {
-    const index = data.findIndex((item) => item.id === bid);
-    const tempData = [...data];
-    tempData[index].boardName = title;
-    setData(tempData);
-  };
+  // const setName = (title, bid) => {
+    
+  //   const index = data.findIndex((item) => item.id === bid);
+  //   const tempData = [...data];
+  //   tempData[index].boardName = title;
+  //   setData(tempData);
+  // };
 
   const dragCardInBoard = (source, destination) => {
     let tempData = [...data];
@@ -68,24 +68,22 @@ function App() {
 
   // const dragCardInSameBoard = (source, destination) => {
   //   let tempData = Array.from(data);
-  //   console.log("Data", tempData);
   //   const index = tempData.findIndex(
   //     (item) => item.id.toString() === source.droppableId
   //   );
-  //   console.log(tempData[index], index);
   //   let [removedCard] = tempData[index].card.splice(source.index, 1);
   //   tempData[index].card.splice(destination.index, 0, removedCard);
   //   setData(tempData);
   // };
 
-  const addCard = (title, bid) => {
+  const addCard = (cardData, bid) => {
     const index = data.findIndex((item) => item.id === bid);
     const tempData = [...data];
     tempData[index].card.push({
       id: uuidv4(),
-      title: title,
-      tags: [],
-      task: [],
+      title: cardData.title,
+      description: cardData.description,
+      deadline: cardData.deadline,
     });
     setData(tempData);
   };
@@ -96,23 +94,6 @@ function App() {
     const cardIndex = data[index].card.findIndex((item) => item.id === cardId);
 
     tempData[index].card.splice(cardIndex, 1);
-    setData(tempData);
-  };
-
-  const addBoard = (title) => {
-    const tempData = [...data];
-    tempData.push({
-      id: uuidv4(),
-      boardName: title,
-      card: [],
-    });
-    setData(tempData);
-  };
-
-  const removeBoard = (bid) => {
-    const tempData = [...data];
-    const index = data.findIndex((item) => item.id === bid);
-    tempData.splice(index, 1);
     setData(tempData);
   };
 
@@ -136,13 +117,13 @@ function App() {
     if (cardIndex < 0) return;
 
     tempBoards[index].card[cardIndex] = card;
-    console.log(tempBoards);
+    console.log('tempboard:',tempBoards);
     setData(tempBoards);
   };
 
-  useEffect(() => {
-    localStorage.setItem("board", JSON.stringify(data));
-  }, [data]);
+  // useEffect(() => {
+  //   localStorage.setItem("board", JSON.stringify(data));
+  // }, [data]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -156,7 +137,7 @@ function App() {
                 id={item.id}
                 name={item.boardName}
                 card={item.card}
-                setName={setName}
+                // setName={setName}
                 addCard={addCard}
                 removeCard={removeCard}
                 // removeBoard={removeBoard}

@@ -1,90 +1,75 @@
-.card__action__btn > button {
-  background-color: var(--task-hover);
-  color: var(--text-color);
+.card-details {
+  font-family: Arial, sans-serif;
+}
+
+.card-editable-fields {
+  margin-bottom: 10px;
+  margin-left: 15px;
+  margin-right: 37px;
+}
+
+.card-editable-fields label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+.card-editable-fields textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 100px;
+}
+
+.card-editable-fields input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.card-actions button {
+  padding: 10px 20px;
+  margin-right: 30px;
+  margin-left: 30px;
+  margin-bottom: 10px;
+  border-radius: 4px;
   border: none;
-  font-size: 15px;
-  border-radius: 3px;
-  box-sizing: border-box;
   cursor: pointer;
-  display: flex;
-  height: 32px;
-  margin-top: 8px;
-  max-width: 300px;
-  overflow: hidden;
-  padding: 6px 12px;
-  position: relative;
-  text-decoration: none;
-  text-overflow: ellipsis;
-  transition-duration: 85ms;
-  transition-property: background-color, border-color, box-shadow;
-  transition-timing-function: ease;
-  -webkit-user-select: none;
-  user-select: none;
-  white-space: nowrap;
-  justify-content: start;
-  align-items: center;
-  gap: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
-.card__action__btn > button:hover {
-  background-color: var(--task-hover);
-  border: none;
+
+.card-actions .save-btn {
+  background-color: #5aac44;
+  color: white;
 }
+
+.card-actions .save-btn:hover {
+  background-color: #519839;
+}
+
+.card-actions .delete-btn {
+  background-color: #c377e0;
+  color: white;
+}
+
+.card-actions .delete-btn:hover {
+  background-color: #a368c6;
+}
+
+/* Icon sizes */
 .icon__sm > svg {
   height: 15px;
   width: 15px;
 }
+
 .icon__md {
   height: 20px;
   width: 20px;
-}
-.card__label {
-  display: flex;
-  justify-content: space-between;
-}
-.label__color > span {
-  height: 32px;
-  box-sizing: border-box;
-  min-width: 40px;
-  width: auto;
-  padding: 0px 12px;
-  display: block;
-  border-radius: 3px;
-  font-weight: 600;
-  color: #fff;
-  line-height: 32px;
-  float: left;
-  margin: 0px 4px 4px 0px;
-}
-.label__color > span:hover {
-  cursor: pointer;
-}
-.progress-bar {
-  background-color: #61bd4f !important;
-}
-.task__editable {
-  width: 30%;
-}
-.task__list {
-  min-height: 20px;
-  height: auto;
-  padding-top: 6px;
-  padding-inline: 0.5rem;
-  border-radius: 2px;
-}
-.task__list:hover {
-  background-color: var(--task-hover);
-}
-
-.task__checkbox {
-  height: 18px !important;
-  width: 18px !important;
-  cursor: pointer;
-}
-.task__list > div > p {
-  text-align: left;
-  font-size: 16px;
-}
-
-.strike-through {
-  text-decoration: line-through;
 }

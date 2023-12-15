@@ -4,10 +4,14 @@ import "./Board.css";
 import { MoreHorizontal } from "react-feather";
 import Editable from "../Editable/Editable";
 import Dropdown from "../Dropdown/Dropdown";
+import CardDetails from '../Card/CardDetails/CardDetails';
 import { Droppable } from "react-beautiful-dnd";
+
 export default function Board(props) {
   const [show, setShow] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+  const [addTask, setAddTask] = useState(false);
+  const BacklogCheck = props.name === "Backlog";
 
   useEffect(() => {
     document.addEventListener("keypress", (e) => {
@@ -20,35 +24,33 @@ export default function Board(props) {
     };
   });
 
-  const BacklogCheck = props.name === "Backlog";
+  const handleAddTaskClick = () => {
+    setAddTask(true);
+  };
+
+  const handleCloseCardDetails = () => {
+    setAddTask(false);
+  };
+
+  const addNewCard = (cardData) => {
+    
+    props.addCard(cardData, props.id);
+  };
 
   return (
     <div className="board">
       <div className="board__top">
-        {show ? (
-          <div>
-            <input
-              className="title__input"
-              type={"text"}
-              defaultValue={props.name}
-              onChange={(e) => {
-                props.setName(e.target.value, props.id);
-              }}
-            />
-          </div>
-        ) : (
-          <div>
-            <p
-              onClick={() => {
-                setShow(true);
-              }}
-              className="board__title"
-            >
-              {props?.name || "Name of Board"}
-              <span className="total__cards">{props.card?.length}</span>
-            </p>
-          </div>
-        )}
+        <div>
+          <p
+            onClick={() => {
+              setShow(true);
+            }}
+            className="board__title"
+          >
+            {props?.name || "Name of Board"}
+            <span className="total__cards">{props.card?.length}</span>
+          </p>
+        </div>
       </div>
       <Droppable droppableId={props.id.toString()}>
         {(provided) => (
@@ -64,7 +66,9 @@ export default function Board(props) {
                 index={index}
                 key={items.id}
                 title={items.title}
-                tags={items.tags}
+                description={items.description}
+                deadline={items.deadline}
+                addCard={props.addCard}
                 updateCard={props.updateCard}
                 removeCard={props.removeCard}
                 card={items}
@@ -75,15 +79,19 @@ export default function Board(props) {
         )}
       </Droppable>
       <div className="board__footer">
-        { BacklogCheck && ( 
-          <Editable
-            name={"Add Task"}
-            btnName={"Add Task"}
-            placeholder={"Enter Task Name"}
-            onSubmit={(value) => props.addCard(value, props.id)}
-          />
+        {BacklogCheck && (
+          <button onClick={handleAddTaskClick}>Add Task</button>
         )}
       </div>
+
+      {addTask && (
+        <CardDetails
+          card={{}} // Empty card for new task
+          addCard={addNewCard} // Pass the function to add the new card
+          onClose={handleCloseCardDetails} // Function to handle closing the modal
+          bid={props.id} // Current board id
+        />
+      )}
     </div>
   );
-}
+};

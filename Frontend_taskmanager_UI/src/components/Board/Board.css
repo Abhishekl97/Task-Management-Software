@@ -65,3 +65,17 @@
 
 /* .board__top > input {
 } */
+.board__footer button {
+  padding: 8px 16px;
+  margin: 10px;
+  background-color:  #2a5572; /* Define this variable in your CSS or replace with a color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.board__footer button:hover {
+  background-color: #00426e; /* Define this variable in your CSS or replace with a color */
+}

@@ -37,42 +37,11 @@ const Card = (props) => {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
           >
-            <div className="card__text">
-              <p>{props.title}</p>
-              <MoreHorizontal
-                className="car__more"
-                onClick={() => {
-                  setDropdown(true);
-                }}
-              />
-            </div>
-
-            <div className="card__tags">
-              {props.tags?.map((item, index) => (
-                <Tag key={index} tagName={item.tagName} color={item.color} />
-              ))}
-            </div>
-
-            <div className="card__footer">
-              {/* <div className="time">
-                <Clock />
-                <span>Sun 12:30</span>
-              </div> */}
-              {props.card.task.length !== 0 && (
-                <div className="task">
-                  <CheckSquare />
-                  <span>
-                    {props.card.task.length !== 0
-                      ? `${
-                          (props.card.task?.filter(
-                            (item) => item.completed === true
-                          )).length
-                        } / ${props.card.task.length}`
-                      : `${"0/0"}`}
-                  </span>
-                </div>
-              )}
-            </div>
+            <div className="card__content">
+            <h4>{props.title}</h4>
+            <p>{props.description}</p>
+            <p>Deadline: {props.deadline}</p>
+          </div>
 
             {provided.placeholder}
           </div>

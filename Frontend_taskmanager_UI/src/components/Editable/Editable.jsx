@@ -13,7 +13,7 @@ const Editable = (props) => {
       props.onSubmit(text);
     }
     setShow(false);
-  };
+  }; 
 
   return (
     <div className={`editable ${props.parentClass}`}>
@@ -26,7 +26,7 @@ const Editable = (props) => {
               id={"edit-input"}
               type={"text"}
               onChange={(e) => setText(e.target.value)}
-            />
+            /> 
             <div className="btn__control">
               <button className="add__btn" type="submit">
                 {`${props.btnName}` || "Add"}
