@@ -121,9 +121,9 @@ function App() {
     setData(tempBoards);
   };
 
-  // useEffect(() => {
-  //   localStorage.setItem("board", JSON.stringify(data));
-  // }, [data]);
+  useEffect(() => {
+    localStorage.setItem("board", JSON.stringify(data));
+  }, [data]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

@@ -1,56 +1,79 @@
+const NodeCache = require('node-cache');
+const cache = new NodeCache();
+
 const pool = require('./db');
 const queries = require('./queries');
 
+const cacheOptions = {
+    stdTTL: 3600, // Cache for 1 hr
+    checkperiod: 120, // Check for expired keys every 2 minutes
+  };
+
 //  Controllers for users
-const getUsers = (req, res) => {
+    const getUsers = async (req, res) => {
+    const startTime = performance.now();
+    const cachedUsers = cache.get('users');
+
+    if (cachedUsers) {
+        const endTime = performance.now();
+        const timeTaken = endTime - startTime;
+        console.log(`Returning data from cache. Time taken: ${timeTaken} ms`);
+        // console.log('Returning data from cache');
+        return res.status(200).json({ timeTaken, data: cachedUsers });
+    }
+
     pool.query(queries.getUsers, (error, results) => {
         if (error) {
             console.error("Error getting users: ", error);
             return res.status(500).json({error: "Error getting users."});
         }
         else {
-            res.status(200).json(results.rows);
+            cache.set('users', results.rows, cacheOptions.stdTTL);
+            const endTime = performance.now(); // Record end time
+            const timeTaken = endTime - startTime;
+            console.log(`Fetched data from the database. Time taken: ${timeTaken} ms`);
+            res.status(200).json({ timeTaken, data: results.rows });
         }
     })
 };
 
-// const getUsersByID = (req, res) => {
-//     console.log('getbyid');
-//     const id = parseInt(req.params.id);
-//     pool.query(queries.getUsersByID, [id], (error, results) => {
-//         const noUserFound = !results.rows.length;
-//         if (error) {
-//             console.error("Error getting user:", error);
-//             return res.status(500).json({error: "Error getting user."});
-//         }
-//         else if (noUserFound) {
-//             res.status(404).json({error: "User does not exist in the database."});
-//         }
-//         else {
-//             res.status(200).json(results.rows);
-//         }
-//     });
-// };
-
-const getUsersByEmailID = (req, res) => {
+const getUsersByEmailID = async (req, res) => {
+    const startTime = performance.now();
     const {email_id} = req.body;
     if (!email_id) {
         return res.status(400).json({error: 'Email id is missing.'});
     }
     else{
-        pool.query(queries.getUsersByEmailID, [email_id], (error, results) => {
-            const noUserFound = !results.rows.length;
-            if (error) {
-                console.error("Error getting user:", error);
-                return res.status(500).json({error: "Error getting user."});
-            }
-            else if (noUserFound) {
-                res.status(404).json({error: "User cannot be found. Please try again."});
-            }
-            else {
-                res.status(200).json(results.rows);
-            }
-        });
+        const cacheKey = `user-${email_id}`;
+        const cachedUser = cache.get(cacheKey);
+        if (cachedUser) {
+            
+            const endTime = performance.now();
+            const timeTaken = endTime - startTime;
+            console.log(`Returning data from cache. Time taken: ${timeTaken} ms`);
+            return res.status(200).json({ timeTaken, data: cachedUser });
+        }
+        else {
+            pool.query(queries.getUsersByEmailID, [email_id], (error, results) => {
+                const noUserFound = !results.rows.length;
+                if (error) {
+                    console.error("Error getting user:", error);
+                    return res.status(500).json({error: "Error getting user."});
+                }
+                else if (noUserFound) {
+                    res.status(404).json({error: "User cannot be found. Please try again."});
+                }
+                else {
+                    // Cache the fetched data
+                    cache.set(cacheKey, results.rows, cacheOptions.stdTTL);
+
+                    const endTime = performance.now(); // Record end time
+                    const timeTaken = endTime - startTime;
+                    console.log(`Fetched user from the database. Time taken: ${timeTaken} ms`);
+                    res.status(200).json(results.rows);
+                }
+            });
+        }
     }
 };
 
@@ -77,6 +100,14 @@ const addUser = (req, res) => {
                         return res.status(500).json({error:"Error adding user."});
                     }
                     else {
+                        //update the cache
+                        cache.del('users');
+                        pool.query(queries.getUsers, (error, results) => {
+                            if (error) { }
+                            else {
+                                cache.set('users', results.rows, cacheOptions.stdTTL);
+                            }
+                        });
                         res.status(201).json({message: 'User registered Successfully!'});
                     }
                 });
@@ -84,37 +115,6 @@ const addUser = (req, res) => {
         });
     }
 };
-
-// const updateUser = (req, res) => {
-//     const id = parseInt(req.params.id);
-//     const { password } = req.body;
-//     if (!password) {
-//         return res.status(400).json({error: 'Password is required.'});
-//     }
-//     else{    
-//         pool.query(queries.getUsersByID, [id], (error, results) => {
-//             const noUserFound = !results.rows.length;
-//             if (error) {
-//                 console.error("Error getting email id: ", error);
-//                 return res.status(500).json({error: "Error getting email id."});
-//             }
-//             else if (noUserFound) {
-//                 res.status(404).json({error: "User does not exist in the database."});
-//             }
-//             else {
-//                 pool.query(queries.updateUser, [password, id], (error, results) => {
-//                     if (error) {
-//                         console.error("Error updating password:", error);
-//                         return res.status(500).json({error: "Error updating password."});
-//                     }
-//                     else {
-//                         res.status(200).json({message: "Password updated successfully!"});
-//                     }
-//                 });
-//             }
-//         });
-//     }
-// };
 
 const updateUserbyEmailID = (req, res) => {
     const { email_id,password } = req.body;
@@ -138,6 +138,14 @@ const updateUserbyEmailID = (req, res) => {
                         return res.status(500).json({error: "Error updating password."});
                     }
                     else {
+                        //update the cache
+                        cache.del('users');
+                        pool.query(queries.getUsers, (error, results) => {
+                            if (error) { }
+                            else {
+                                cache.set('users', results.rows, cacheOptions.stdTTL);
+                            }
+                        });
                         res.status(200).json({message: "Password updated successfully!"});
                     }
                 });
@@ -147,29 +155,41 @@ const updateUserbyEmailID = (req, res) => {
 };
 
 const removeUser = (req, res) => {
-    const id  = parseInt(req.params.id);
-
-    pool.query(queries.getUsersByID, [id], (error, results) => {
-        const noUserFound = !results.rows.length;
-        if (error) {
-            console.error("Error getting user id:", error);
-            return res.status(500).json({error: "Error getting user id."});
-        }
-        else if(noUserFound) {
-            res.status(404).json({error: "User does not exist in the database."});
-        }
-        else {
-            pool.query(queries.removeUser, [id], (error, results) => {
-                if (error) {
-                    console.error("Error deleting user:", error);
-                    return res.status(500).json({error: "Error deleting user."});
-                }
-                else {
-                    res.status(200).json({message: "User deleted successfully!"})
-                }
-            });
-        }
-    });
+    const { email_id} = req.body;
+    if (!email_id) {
+        return res.status(400).json({error: 'Email id is required.'});
+    }
+    else{ 
+        pool.query(queries.getUsersByEmailID, [email_id], (error, results) => {
+            const noUserFound = !results.rows.length;
+            if (error) {
+                console.error("Error getting user id:", error);
+                return res.status(500).json({error: "Error getting user id."});
+            }
+            else if(noUserFound) {
+                res.status(404).json({error: "User cannot be found. Please try again."});
+            }
+            else {
+                pool.query(queries.removeUser, [email_id], (error, results) => {
+                    if (error) {
+                        console.error("Error deleting user:", error);
+                        return res.status(500).json({error: "Error deleting user."});
+                    }
+                    else {
+                        //update the cache
+                        cache.del('users');
+                        pool.query(queries.getUsers, (error, results) => {
+                            if (error) { }
+                            else {
+                                cache.set('users', results.rows, cacheOptions.stdTTL);
+                            }
+                        });
+                        res.status(200).json({message: "User deleted successfully!"})
+                    }
+                });
+            }
+        });
+    }
 };
 
 const userLogin = (req, res) => {
@@ -202,12 +222,26 @@ const userLogin = (req, res) => {
 
 // Controllers for projects
 const getProjects = (req, res) => {
+    const startTime = performance.now();
+    const cachedProjects = cache.get('projects');
+
+    if (cachedProjects) {
+        const endTime = performance.now();
+        const timeTaken = endTime - startTime;
+        console.log(`Returning data from cache. Time taken: ${timeTaken} ms`);
+        // console.log('Returning data from cache');
+        return res.status(200).json({ timeTaken, data: cachedProjects });
+    }
     pool.query(queries.getProjects, (error, results) => {
         if (error) {
             console.error("Error getting projects:", error);
             return res.status(500).json({error: "Error getting projects."});
         }
         else {
+            cache.set('projects', results.rows, cacheOptions.stdTTL);
+            const endTime = performance.now(); // Record end time
+            const timeTaken = endTime - startTime;
+            console.log(`Fetched data from the database. Time taken: ${timeTaken} ms`);
             res.status(200).json(results.rows);
         }
     })
@@ -232,11 +266,11 @@ const getProjectsByID = (req, res) => {
 
 
 const addProject = (req, res) => {
-    const { project_name, project_description, user_id } = req.body;
+    const { project_name, project_description, email_id } = req.body;
     const id = parseInt(req.params.id);
 
-    if (!project_name || !project_description || !user_id) {
-        return res.status(400).json({error: 'Project Name or Description or User id is missing.'});
+    if (!project_name || !project_description || !email_id) {
+        return res.status(400).json({error: 'Project Name or Description or email id is missing.'});
     }
     else{
         pool.query(queries.checkProjectExists, [project_name], (error, results) => {
@@ -248,7 +282,7 @@ const addProject = (req, res) => {
                 res.json({error: "Project already exists."});
             }
             else {
-                pool.query(queries.getUsersByID, [user_id], (error, results) => {
+                pool.query(queries.getUsersByEmailID, [email_id], (error, results) => {
                     const noUserFound = !results.rows.length;
                     if (error) {
                         console.error("Error getting user id:", error);
@@ -258,12 +292,21 @@ const addProject = (req, res) => {
                         res.status(404).json({error: "User does not exist in the database."});
                     }
                     else {
+                        user_id = results.rows[0].user_id;
                         pool.query(queries.addProject, [project_name, project_description, user_id], (error, results) => {
                             if (error) {
                                 console.error("Error adding project:", error);
                                 return res.status(500).json({error: "Error adding project."});
                             }
                             else {
+                                //update the cache
+                                cache.del('projects');
+                                pool.query(queries.getProjects, (error, results) => {
+                                    if (error) { }
+                                    else {
+                                        cache.set('projects', results.rows, cacheOptions.stdTTL);
+                                    }
+                                });
                                 res.status(201).json({message: 'Project added Successfully!'});
                             }
                         });
@@ -306,6 +349,14 @@ const updateProjectName = (req, res) => {
                                 return res.status(500).json({error: "Error updating project name."});
                             }
                             else {
+                                //update the cache
+                                cache.del('projects');
+                                pool.query(queries.getProjects, (error, results) => {
+                                    if (error) { }
+                                    else {
+                                        cache.set('projects', results.rows, cacheOptions.stdTTL);
+                                    }
+                                });
                                 res.status(200).json({message: "Project name updated successfully!"});
                             }
                         });
@@ -340,6 +391,14 @@ const updateProjectDescription = (req, res) => {
                         return res.status(500).json({error: "Error updating project description."});
                     }
                     else {
+                        //update the cache
+                        cache.del('projects');
+                        pool.query(queries.getProjects, (error, results) => {
+                            if (error) { }
+                            else {
+                                cache.set('projects', results.rows, cacheOptions.stdTTL);
+                            }
+                        });
                         res.status(200).json({message: "Project description updated successfully!"});
                     }
                 });
@@ -367,6 +426,14 @@ const removeProject = (req, res) => {
                     return res.status(500).json({error: "Error deleting project."});
                 }
                 else {
+                    //update the cache
+                    cache.del('projects');
+                    pool.query(queries.getProjects, (error, results) => {
+                        if (error) { }
+                        else {
+                            cache.set('projects', results.rows, cacheOptions.stdTTL);
+                        }
+                    });
                     res.status(200).json({message: "Project deleted successfully!"})
                 }
             });
@@ -382,6 +449,16 @@ const getTasks = (req, res) => {
         return res.status(400).json({error: 'Project id is required.'});
     }
     else {
+        const startTime = performance.now();
+        const cacheKey = `tasks-${project_id}`;
+        const cachedTasks = cache.get(cacheKey);
+
+        if (cachedTasks) {
+            const endTime = performance.now();
+            const timeTaken = endTime - startTime;
+            console.log(`Returning data from cache. Time taken: ${timeTaken} ms`);
+            return res.status(200).json({ timeTaken, data: cachedTasks });
+        }
         pool.query(queries.getProjectsByID, [project_id], (error, results) => {
             if (error){
                 console.error("Error getting project id:", error);
@@ -399,6 +476,10 @@ const getTasks = (req, res) => {
                             return res.status(500).json({error: "Error getting tasks."});
                         }
                         else {
+                            cache.set(cacheKey, results.rows, cacheOptions.stdTTL);
+                            const endTime = performance.now();
+                            const timeTaken = endTime - startTime;
+                            console.log(`Fetched tasks from the database. Time taken: ${timeTaken} ms`);
                             res.status(200).json(results.rows);
                         }
                     })
@@ -447,12 +528,14 @@ const getTasksByID = (req, res) => {
 };
 
 const addTask = (req, res) => {
-    const { project_id, task_name, task_description, user_id, status, deadline} = req.body;
-    const id = parseInt(req.params.id);
+    const { task_name, task_description, email_id, deadline} = req.body;
+    // const id = parseInt(req.params.id);
     const created_at = new Date();
     const updated_at = new Date();
+    const status = "Backlog";
+    const project_id = 1;
     
-    if (!task_name || !task_description || !user_id || !status || !deadline || !project_id) {
+    if (!task_name || !task_description || !email_id || !status || !deadline || !project_id) {
         return res.status(400).json({error: 'One of inputs is missing.'});
     }
     else{
@@ -476,7 +559,7 @@ const addTask = (req, res) => {
                             res.json({error: "Task already exists."});
                         }
                         else {
-                            pool.query(queries.getUsersByID, [user_id], (error, results) => {
+                            pool.query(queries.getUsersByEmailID, [email_id], (error, results) => {
                                 const noUserFound = !results.rows.length;
                                 if (error) {
                                     console.error("Error getting user id:", error);
@@ -486,6 +569,7 @@ const addTask = (req, res) => {
                                     res.status(404).json({error: "User does not exist in the database."});
                                 }
                                 else {
+                                    user_id = results.rows[0].user_id;
                                     pool.query(queries.addTask, [task_name, task_description, user_id, status, deadline, created_at, updated_at, project_id], (error, results) => {
                                         if (error) {
                                             console.error("Error adding task:", error);
@@ -738,10 +822,8 @@ const removeTask = (req, res) => {
 
 module.exports = {
     getUsers,
-    // getUsersByID,
     getUsersByEmailID,
     addUser,
-    // updateUser,
     updateUserbyEmailID,
     removeUser,
     userLogin,
