@@ -38,7 +38,11 @@ This project is a Task Management Software that helps users efficiently manage t
 
 ![Drag_and_drop_2](https://github.com/OmkarYeole/Task-Management-Software/assets/78723743/410f9ac0-5582-44b7-bca6-dda135c05122)
 
+**Drag and Drop Functionality**
 
+![Dark_Mode](https://github.com/OmkarYeole/Task-Management-Software/assets/78723743/b36646ee-e80f-4781-8f5d-b9de75ed718a)
+
+**Dark Mode**
 
 
 ## Contact
@@ -46,10 +50,3 @@ This project is a Task Management Software that helps users efficiently manage t
 For any questions or further information, you can reach me at omkar.yeole@colorado.edu.
 
 Thank you for visiting the Task Management Software project!
-
-**Drag and Drop Functionality**
-
-![Dark_Mode](https://github.com/OmkarYeole/Task-Management-Software/assets/78723743/b36646ee-e80f-4781-8f5d-b9de75ed718a)
-
-**Dark Mode**
-
