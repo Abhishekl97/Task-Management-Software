@@ -38,6 +38,9 @@ This project is a Task Management Software that helps users efficiently manage t
 
 ![Drag_and_drop_2](https://github.com/OmkarYeole/Task-Management-Software/assets/78723743/410f9ac0-5582-44b7-bca6-dda135c05122)
 
+
+
+
 ## Contact
 
 For any questions or further information, you can reach me at omkar.yeole@colorado.edu.
