@@ -2,16 +2,17 @@
 
 ## Overview
 
-This project is a Task Management Software which helps users to effeciently manage their tasks using our wep app.
+This project is a Task Management Software that helps users efficiently manage their tasks using our web application. The software is designed to provide a user-friendly interface with essential features for task organization and management.
 
 ## Features
-1) **User authentication using Login and Signup**
-   
-2) **Creating Tasks with task description and time**
-   
-3) **Drag and Drop Functionality**
- 
-4) **Dark Mode** 
+
+**User Authentication:** Secure login and signup functionality to ensure only authorized access.
+
+**Task Creation:** Create tasks with detailed descriptions and specified times.
+
+**Drag and Drop:** Easily organize tasks with drag and drop functionality.
+
+**Dark Mode:** Toggle dark mode for a comfortable viewing experience in low light conditions.
 
 ## Technolgies Used
 
@@ -36,6 +37,12 @@ This project is a Task Management Software which helps users to effeciently mana
 ![Drag_and_drop_1](https://github.com/OmkarYeole/Task-Management-Software/assets/78723743/f647a95a-a559-4b5f-b58c-23b10adbfdf6)
 
 ![Drag_and_drop_2](https://github.com/OmkarYeole/Task-Management-Software/assets/78723743/410f9ac0-5582-44b7-bca6-dda135c05122)
+
+## Contact
+
+For any questions or further information, you can reach me at omkar.yeole@colorado.edu.
+
+Thank you for visiting the Task Management Software project!
 
 **Drag and Drop Functionality**
 
