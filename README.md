@@ -1,9 +1,5 @@
 # Task Management Software
 
-## Live Link
-
-https://omkar-yeole-portfolio.vercel.app/
-
 ## Overview
 
 This project is a Task Management Software that helps users efficiently manage their tasks using our web application. The software is designed to provide a user-friendly interface with essential features for task organization and management.
