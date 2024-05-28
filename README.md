@@ -6,15 +6,21 @@ This project is a Task Management Software which helps users to effeciently mana
 
 ## Features
 1) **User authentication using Login and Signup**
+   
 2) **Creating Tasks with task description and time**
+   
 3) **Drag and Drop Functionality**
+ 
 4) **Dark Mode** 
 
 ## Technolgies Used
 
 **Frontend**: HTML, CSS, JavaScript, React.
+
 **Backend**: Node.js, Express.js, REST, NodeCache.
+
 **Database**: PostgreSQL.
+
 **Tools**: Postman.
 
 ## A Glimpse of the Web App
