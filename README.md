@@ -47,6 +47,6 @@ This project is a Task Management Software that helps users efficiently manage t
 
 ## Contact
 
-For any questions or further information, you can reach me at omkar.yeole@colorado.edu.
+For any questions or further information, you can reach me at omkaryeole@gmail.com.
 
 Thank you for visiting the Task Management Software project!
